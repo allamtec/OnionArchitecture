@@ -1,16 +1,21 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OA.Core.Data;
-
+using OA.Repository;
+using OA.Repository.Interfaces;
+using OA.Services;
+using OA.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,14 +49,47 @@ namespace OA.Web
 
 
             }).AddEntityFrameworkStores<ApplicationDbContext>(); ;
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+
+            services.AddControllersWithViews()
+                .AddViewLocalization().AddRazorRuntimeCompilation();
+
+
+            // localization middleware
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("ar-EG");
+                var cultures = new CultureInfo[]
+                {
+                    new CultureInfo("ar-EG"),
+                    new CultureInfo("en-US")
+                    //new CultureInfo("fr-FR")
+                };
+
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
+
+            /////////////////////
+
+            #region Service Injected
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IOrderRepository, OrderRepository>();
+
+
+            services.AddTransient<IOrderService, OrderService>();
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRequestLocalization();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

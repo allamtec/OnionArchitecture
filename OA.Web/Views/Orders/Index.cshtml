@@ -1,0 +1,59 @@
+﻿@model IEnumerable<OA.Core.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+@inject IHtmlLocalizer<OrdersController> HtmlLocalizer
+
+
+
+<h1>@HtmlLocalizer["Orders"]</h1>
+
+<p>
+	<a asp-action="Create">@HtmlLocalizer["CreateNew"]</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+				@HtmlLocalizer["Customer"]
+            </th>
+            <th>
+				@HtmlLocalizer["Date"]
+            </th>
+            <th>
+				@HtmlLocalizer["Address"]
+            </th>
+            <th>
+				@HtmlLocalizer["Phone"]
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+					<a asp-action="Edit" asp-route-id="@item.Id">@HtmlLocalizer["Edit"]</a> |
+					<a asp-action="Details" asp-route-id="@item.Id">@HtmlLocalizer["Details"]</a> |
+					<a asp-action="Delete" asp-route-id="@item.Id">@HtmlLocalizer["Delete"]</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace OA.Services
 {
-    public class OrderService : IOrderService<Order>
+    public class OrderService : IOrderService
     {
-        private readonly IRepository<Order> _orderRepository;
-        public OrderService(IRepository<Order> studentRepository)
+        private readonly IOrderRepository _orderRepository;
+        public OrderService(IOrderRepository studentRepository)
         {
             _orderRepository = studentRepository;
         }
@@ -29,6 +29,25 @@ namespace OA.Services
             }
         }
         public Order Get(int Id)
+        {
+            try
+            {
+                var obj = _orderRepository.Get(Id);
+                if (obj != null)
+                {
+                    return obj;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Order GetFullOrder(int Id)
         {
             try
             {
@@ -96,6 +115,12 @@ namespace OA.Services
                 throw;
             }
         }
+
+        public void SaveChanges()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(Order entity)
         {
             try

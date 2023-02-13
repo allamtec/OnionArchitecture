@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Migrations;
+using OA.Core.Models;
+using OA.Repository.Interfaces;
 
 namespace OA.Services.Interfaces
 {
-    public interface IOrderService<T> where T : class
+    public interface IOrderService : IRepository<Order>
     {
-        IEnumerable<T> GetAll();
-        T Get(int Id);
-        void Insert(T entity);
-        void Update(T entity);
-        void Delete(T entity);
-        void Remove(T entity);
+        Order GetFullOrder(int Id);
     }
+
 }

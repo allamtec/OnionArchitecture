@@ -6,30 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data__\Migrations\**" />
-    <Content Remove="Data__\Migrations\**" />
-    <EmbeddedResource Remove="Data__\Migrations\**" />
-    <None Remove="Data__\Migrations\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Data__\ApplicationDbContext.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.17" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OA.Core\OA.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data__\" />
+    <ProjectReference Include="..\OA.Services\OA.Services.csproj" />
   </ItemGroup>
 
 </Project>

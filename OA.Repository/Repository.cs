@@ -13,8 +13,8 @@ namespace OA.Repository
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         #region property
-        private readonly ApplicationDbContext _applicationDbContext;
-        private DbSet<T> entities;
+        protected readonly ApplicationDbContext _applicationDbContext;
+        protected DbSet<T> entities;
         #endregion
         #region Constructor
         public Repository(ApplicationDbContext applicationDbContext)
@@ -23,7 +23,7 @@ namespace OA.Repository
             entities = _applicationDbContext.Set<T>();
         }
         #endregion
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             if (entity == null)
             {
@@ -32,15 +32,15 @@ namespace OA.Repository
             entities.Remove(entity);
             _applicationDbContext.SaveChanges();
         }
-        public T Get(int Id)
+        public virtual T Get(int Id)
         {
             return entities.SingleOrDefault(c => c.Id == Id);
         }
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return entities.AsEnumerable();
         }
-        public void Insert(T entity)
+        public virtual void Insert(T entity)
         {
             if (entity == null)
             {
@@ -49,7 +49,7 @@ namespace OA.Repository
             entities.Add(entity);
             _applicationDbContext.SaveChanges();
         }
-        public void Remove(T entity)
+        public virtual void Remove(T entity)
         {
             if (entity == null)
             {
@@ -57,11 +57,11 @@ namespace OA.Repository
             }
             entities.Remove(entity);
         }
-        public void SaveChanges()
+        public virtual void SaveChanges()
         {
             _applicationDbContext.SaveChanges();
         }
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             if (entity == null)
             {
