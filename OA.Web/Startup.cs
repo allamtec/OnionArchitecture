@@ -76,6 +76,8 @@ namespace OA.Web
 
             /////////////////////
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             #region Service Injected
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IOrderRepository, OrderRepository>();

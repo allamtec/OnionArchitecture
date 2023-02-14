@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OA.Core.Data;
+using OA.Core.Dto;
 using OA.Core.Models;
 using OA.Services;
 using OA.Services.Interfaces;
@@ -16,17 +18,23 @@ namespace OA.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
-
-        public OrdersController(ApplicationDbContext context, IOrderService orderService)
+        private IMapper Mapper
+        {
+            get;
+        }
+        public OrdersController(ApplicationDbContext context, IOrderService orderService, IMapper mapper)
         {
             _context = context;
             _orderService = orderService;
+            Mapper = mapper;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(_orderService.GetAll());
+            var data = _orderService.GetAll();
+
+            return View(data);
         }
 
         // GET: Orders/Details/5
@@ -50,7 +58,7 @@ namespace OA.Web.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            return View(new Order());
+            return View(new OrderDto());
         }
 
         // POST: Orders/Create

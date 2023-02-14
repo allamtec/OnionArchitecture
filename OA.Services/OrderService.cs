@@ -1,4 +1,6 @@
-﻿using OA.Core.Models;
+﻿using AutoMapper;
+using OA.Core.Dto;
+using OA.Core.Models;
 using OA.Repository.Interfaces;
 using OA.Services.Interfaces;
 using System;
@@ -9,16 +11,22 @@ namespace OA.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IOrderRepository studentRepository)
+        private IMapper Mapper
+        {
+            get;
+        }
+        public OrderService(IOrderRepository studentRepository, IMapper mapper)
         {
             _orderRepository = studentRepository;
+            Mapper = mapper;
         }
-        public void Delete(Order entity)
+        public void Delete(OrderDto _entity)
         {
             try
             {
-                if (entity != null)
+                if (_entity != null)
                 {
+                    var entity = Mapper.Map<Order>(_entity);
                     _orderRepository.Delete(entity);
                     _orderRepository.SaveChanges();
                 }
@@ -28,14 +36,16 @@ namespace OA.Services
                 throw;
             }
         }
-        public Order Get(int Id)
+        public OrderDto Get(int Id)
         {
             try
             {
                 var obj = _orderRepository.Get(Id);
                 if (obj != null)
                 {
-                    return obj;
+                    var objDto = Mapper.Map<OrderDto>(obj);
+
+                    return objDto;
                 }
                 else
                 {
@@ -47,14 +57,16 @@ namespace OA.Services
                 throw;
             }
         }
-        public Order GetFullOrder(int Id)
+        public OrderDto GetFullOrder(int Id)
         {
             try
             {
                 var obj = _orderRepository.Get(Id);
                 if (obj != null)
                 {
-                    return obj;
+                    var objDto = Mapper.Map<OrderDto>(obj);
+
+                    return objDto;
                 }
                 else
                 {
@@ -66,31 +78,29 @@ namespace OA.Services
                 throw;
             }
         }
-        public IEnumerable<Order> GetAll()
+        public IEnumerable<OrderDto> GetAll()
         {
             try
             {
-                var obj = _orderRepository.GetAll();
-                if (obj != null)
-                {
-                    return obj;
-                }
-                else
-                {
-                    return null;
-                }
+                var data = _orderRepository.GetAll();
+                var dataDto = Mapper.Map<IEnumerable<OrderDto>>(data);
+
+                    return dataDto;
+
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public void Insert(Order entity)
+        public void Insert(OrderDto _entity)
         {
             try
             {
-                if (entity != null)
+                if (_entity != null)
                 {
+                    var entity = Mapper.Map<Order>(_entity);
+
                     _orderRepository.Insert(entity);
                     _orderRepository.SaveChanges();
                 }
@@ -100,12 +110,13 @@ namespace OA.Services
                 throw;
             }
         }
-        public void Remove(Order entity)
+        public void Remove(OrderDto _entity)
         {
             try
             {
-                if (entity != null)
+                if (_entity != null)
                 {
+                    var entity = Mapper.Map<Order>(_entity);
                     _orderRepository.Remove(entity);
                     _orderRepository.SaveChanges();
                 }
@@ -121,12 +132,13 @@ namespace OA.Services
             throw new NotImplementedException();
         }
 
-        public void Update(Order entity)
+        public void Update(OrderDto _entity)
         {
             try
             {
-                if (entity != null)
+                if (_entity != null)
                 {
+                    var entity = Mapper.Map<Order>(_entity);
                     _orderRepository.Update(entity);
                     _orderRepository.SaveChanges();
                 }

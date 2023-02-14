@@ -14,7 +14,7 @@ namespace OA.Core.Dto
 
         }
         public string Customer { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now.Date;
         public string Address { get; set; }
         public int Phone { get; set; }
 
