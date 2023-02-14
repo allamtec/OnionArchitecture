@@ -1,7 +1,7 @@
 ﻿@model OA.Core.Dto.OrderDto
 @inject IHtmlLocalizer<OrdersController> HtmlLocalizer
 @{
-    ViewData["Title"] = "Edit";
+	ViewData["Title"] = "Edit";
 }
 
 <h1>@HtmlLocalizer["Edit"]</h1>
@@ -9,40 +9,41 @@
 <h4>@HtmlLocalizer["Orders"]</h4>
 <hr />
 <form asp-action="Edit" class="col-md-12">
-<div class="row">
-	<div class="col-md-3">
+	<div class="row">
+		<div class="col-md-4">
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-			<label asp-for="Customer" class="control-label">@HtmlLocalizer["Customer"]</label>
-            <input asp-for="Customer" class="form-control" />
-            <span asp-validation-for="Customer" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-			<label asp-for="Date" class="control-label">@HtmlLocalizer["Date"]</label>
-            <input asp-for="Date" culture="ar-SA" type="date" class="form-control" />
-            <span asp-validation-for="Date" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-			<label asp-for="Address" class="control-label">@HtmlLocalizer["Address"]</label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-			<label asp-for="Phone" class="control-label">@HtmlLocalizer["Phone"]</label>
-            <input asp-for="Phone" class="form-control" />
-            <span asp-validation-for="Phone" class="text-danger"></span>
-        </div>
-        <input type="hidden" asp-for="Id" />
-
-			        <div class="form-group">
-			<input type="submit" value="@HtmlLocalizer["Save"]" class="btn btn-primary" />
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Customer" class="control-label">@HtmlLocalizer["Customer"]</label>
+				<input asp-for="Customer" class="form-control" />
+				<span asp-validation-for="Customer" class="text-danger"></span>
 			</div>
-	</div>
-	<div class="col-md-9">
-		<div class="form-group">
-			<button class="btn btn-primary">@HtmlLocalizer["Add"]</button>
+			<div class="form-group">
+				<label asp-for="Date" class="control-label">@HtmlLocalizer["Date"]</label>
+				<input asp-for="Date" culture="ar-SA" type="date" class="form-control" />
+				<span asp-validation-for="Date" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Address" class="control-label">@HtmlLocalizer["Address"]</label>
+				<input asp-for="Address" class="form-control" />
+				<span asp-validation-for="Address" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Phone" class="control-label">@HtmlLocalizer["Phone"]</label>
+				<input asp-for="Phone" class="form-control" />
+				<span asp-validation-for="Phone" class="text-danger"></span>
+			</div>
+			<input type="hidden" asp-for="Id" />
+
+
 		</div>
+
+	</div>
+	<div class="row">
+		<div class="form-group">
+			<button onclick="return addLine()" class="btn btn-primary">@HtmlLocalizer["AddItem"]</button>
+		</div>
+		<input id="Details" type="hidden" name="Details" />
 		<table class="table">
 			<thead>
 				<tr>
@@ -58,7 +59,9 @@
 					<th>
 						@HtmlLocalizer["Price"]
 					</th>
-					<th></th>
+					<th>
+						@HtmlLocalizer["Total"]
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -66,22 +69,33 @@
 				{
 					<tr>
 						<td>
-							@Html.DisplayFor(modelItem => item.ItemNo)
+							<input id="Id" type="hidden" value="@item.Id" />
+							<input id="ItemNo" type="text" value="@item.ItemNo" />
+
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.Description)
+							<input id="Description" type="text" value="@item.Description" />
+
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.Quantity)
+							<input id="Quantity" type="number" onchange="totals()" value="@item.Quantity" />
+
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.Price)
+							<input id="Price" type="number" onchange="totals()" value="@item.Price" />
+
+
 						</td>
-						<td>
-							<a asp-action="Edit" asp-route-id="@item.Id">@HtmlLocalizer["Edit"]</a> |
-							<a asp-action="Details" asp-route-id="@item.Id">@HtmlLocalizer["Details"]</a> |
-							<a asp-action="Delete" asp-route-id="@item.Id">@HtmlLocalizer["Delete"]</a>
+						<td id="Total">
+
+
+							@Html.DisplayFor(modelItem => item.Total)
 						</td>
+						@*						<td>
+					<a asp-action="Edit" asp-route-id="@item.Id">@HtmlLocalizer["Edit"]</a> |
+					<a asp-action="Details" asp-route-id="@item.Id">@HtmlLocalizer["Details"]</a> |
+					<a asp-action="Delete" asp-route-id="@item.Id">@HtmlLocalizer["Delete"]</a>
+					</td>*@
 					</tr>
 				}
 			</tbody>
@@ -90,14 +104,77 @@
 
 
 	</div>
-
-    </div>
-</div>
+	<div class="form-group">
+		<input onclick="return collectItems()" type="submit" value="@HtmlLocalizer["Save"]" class="btn btn-primary" />
+	</div>
 </form>
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
 
+<script>
+
+	totals = function () {
+
+		$('tbody>tr').each(function () {
+
+				let Quantity= Number( $(this).find('#Quantity').val());
+			let Price= Number($(this).find('#Price').val());
+		let total = Quantity * Price;
+		$(this).find('#Total').html(total);
+		});
+
+	
+
+		return true;
+
+	};
+
+		collectItems = function () {
+		let details = []
+		$('tbody>tr').each(function () {
+			details.push({
+				Id: $(this).find('#Id').val(),
+				ItemNo: $(this).find('#ItemNo').val(),
+				Description: $(this).find('#Description').val(),
+				Quantity: $(this).find('#Quantity').val(),
+				Price: $(this).find('#Price').val(),
+			});
+		});
+
+		$('#Details').val(JSON.stringify(details));
+
+		return true;
+
+	};
+		addLine = function () {
+		let line ='<tr>\
+							<td>\
+								<input id="Id" type="hidden" value="0" />\
+								<input id="ItemNo" type="text" value="" />\
+							</td>\
+							<td>\
+								<input id="Description" type="text" value="" />\
+							</td>\
+							<td>\
+									<input id="Quantity" type="number" onchange="totals()" value="1" /> \
+							</td>\
+							<td>\
+								<input id="Price" type="number" onchange="totals()" value="0" /> \
+							</td>\
+							<td id="Total">\
+								0\
+							</td>\
+</tr>'
+
+		$('tbody').append(line);
+
+		return false;
+
+	};
+</script>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	}

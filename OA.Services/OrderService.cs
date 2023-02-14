@@ -61,7 +61,7 @@ namespace OA.Services
         {
             try
             {
-                var obj = _orderRepository.Get(Id);
+                var obj = _orderRepository.GetFullOrder(Id);
                 if (obj != null)
                 {
                     var objDto = Mapper.Map<OrderDto>(obj);

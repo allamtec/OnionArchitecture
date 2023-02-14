@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using OA.Services.Interfaces;
 
 namespace OA.Web.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -66,12 +68,13 @@ namespace OA.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Customer,Date,Address,Phone,Id")] Order order)
+        public async Task<IActionResult> Create([Bind("Customer,Date,Address,Phone,Id")] OrderDto order, string Details)
         {
+            order.OrderDetails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderDetailDto>>(Details);
             if (ModelState.IsValid)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
+                _orderService.Insert(order);
+  
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
@@ -98,8 +101,9 @@ namespace OA.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Customer,Date,Address,Phone,Id")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Customer,Date,Address,Phone,Id")] OrderDto order, string Details)
         {
+            order.OrderDetails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderDetailDto>>(Details);
             if (id != order.Id)
             {
                 return NotFound();
@@ -109,8 +113,8 @@ namespace OA.Web.Controllers
             {
                 try
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    _orderService.Update(order);
+        
                 }
                 catch (DbUpdateConcurrencyException)
                 {
